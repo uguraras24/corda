@@ -36,17 +36,15 @@ public class ViewInboxByAccount extends FlowLogic<List<String>>{
                 it -> "\nInternalMessages State : " + it.getState().getData().getTask()).collect(Collectors.toList());
 
         List<String> payments = getServiceHub().getVaultService().queryBy(PaymentState.class,criteria).getStates().stream().map(
-                it -> "\nPayment State : " +it.getState().getData().getAmount()).collect(Collectors.toList());
+                it -> "\nPayment : " +it.getState().getData().getAmount()).collect(Collectors.toList());
+        List<String> month = getServiceHub().getVaultService().queryBy(PaymentState.class,criteria).getStates().stream().map(
+                it -> "\nMonth : " +it.getState().getData().getMonth()).collect(Collectors.toList());
+        List<String> distribution = getServiceHub().getVaultService().queryBy(PaymentState.class,criteria).getStates().stream().map(
+                it -> "\nDistribution : " +it.getState().getData().getDistribution()).collect(Collectors.toList());
+        List<String> fund = getServiceHub().getVaultService().queryBy(PaymentState.class,criteria).getStates().stream().map(
+                it -> "\nFund : " +it.getState().getData().getFundid()).collect(Collectors.toList());
 
-        List<String> Cargos = getServiceHub().getVaultService().queryBy(CargoState.class,criteria).getStates().stream().map(
-                it -> "\nCargo State : " + it.getState().getData().getCargo()).collect(Collectors.toList());
 
-        List<String> invoices = getServiceHub().getVaultService().queryBy(InvoiceState.class,criteria).getStates().stream().map(
-                it -> "\nInvoice State : " + it.getState().getData().getAmount()).collect(Collectors.toList());
-
-        List<String> shippingRequest = getServiceHub().getVaultService().queryBy(ShippingRequestState.class,criteria).getStates().stream().map(
-                it -> "\nshippingRequest State : " + it.getState().getData().getCargo()).collect(Collectors.toList());
-
-        return Stream.of(InternalMessages, payments, Cargos,invoices,shippingRequest).flatMap(Collection::stream).collect(Collectors.toList());
+        return Stream.of(InternalMessages, payments,month,distribution,fund).flatMap(Collection::stream).collect(Collectors.toList());
     }
 }

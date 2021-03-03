@@ -33,12 +33,20 @@ public class SendPayment extends FlowLogic<String> {
     private String whoAmI ;
     private String whereTo;
     private int amount;
+    private int rate;
+    private String month;
+    private int distribution;
+    private String fundid;
 
     //public constructor
-    public SendPayment(String whoAmI, String whereTo, int amount){
+    public SendPayment(String whoAmI, String whereTo, int amount,int rate, String month, int distribution, String fundid){
         this.whoAmI = whoAmI;
         this.whereTo = whereTo;
-        this.amount = amount;
+        this.amount = (amount*rate)/100;
+        this.rate = rate;
+        this.month= month;
+        this.distribution=distribution;
+        this.fundid=fundid;
     }
 
     @Suspendable
@@ -54,7 +62,7 @@ public class SendPayment extends FlowLogic<String> {
         AnonymousParty targetAcctAnonymousParty = subFlow(new RequestKeyForAccount(targetAccount));
 
         //generating State for transfer
-        PaymentState output = new PaymentState(amount,new AnonymousParty(myKey),targetAcctAnonymousParty);
+        PaymentState output = new PaymentState(amount,rate,month,distribution,fundid,new AnonymousParty(myKey),targetAcctAnonymousParty);
 
         // Obtain a reference to a notary we wish to use.
         /** METHOD 1: Take first notary on network, WARNING: use for test, non-prod environments, and single-notary networks only!*
